@@ -1,0 +1,24 @@
+Planejamento Do Projeto LPL 
+
+1°- definir como vai ficar o layolt principal do nosso site, se vai se basear em algum app de streaming ou algo mai voltadado para jogos 
+	isso serve para
+		- definir a quantidade e grau de CSS que será usado 
+		- aprimorar a ideia e dar a ela uma base melhor
+
+2°- Fazer um exemplo real de como irá ser o sistema de msotragem de trechos
+	ideias:
+		-fazer algo diario estilo termo e contexto (assim como aqueles jogos de browser)
+		-deixar uma gama de trechos de 2 ou 4 séries já pronto, apenas para o usuario já utilizar
+		-(...) -pode haver mais ideias
+
+3°- Decidir como será o sistema de pontos e ver como o mesmo irá interagir com o sistema html da pagina onde irá ficar os trechos das séries
+
+4°- Decidi como ficaram os outros layouts das paginas, quantos terão e os componentes de cada uma
+
+5° - decidir a parte artistica 
+	como:
+		-O mascote do corvo (criar nome, aparencia e oque der mais na telha)
+		-O desingn de cada pagina e pegar algo de base (algun site ou algo do tipo)
+		
+
+				LEMBRANDO QUE O PROJETO ESTÁ EM DESENVOLVIMENTO E AINDA PODR SER MUDADO
