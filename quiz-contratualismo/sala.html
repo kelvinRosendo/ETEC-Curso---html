@@ -1,30 +1,239 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>O Pacto | Quiz Multiplayer</title><style>
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Inter:wght@400;600;800&display=swap');*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -20%,#4c3821,#0b0b12 65%);color:#f7ead1;font:16px Inter,Arial}body:before{content:"◉";position:fixed;top:-170px;right:-100px;font-size:540px;color:#d4a85e12;pointer-events:none}main{max-width:1050px;margin:auto;padding:20px 18px 60px;position:relative}header{border-bottom:1px solid #82673b;display:flex;align-items:center;justify-content:space-between;padding:12px 0;color:#e0b96b}.kicker{letter-spacing:.2em;text-transform:uppercase;color:#dbbb79;font-size:.8rem;font-weight:800}.hero{text-align:center;padding:35px 12px}.sigil{font-size:68px;color:#e7c475;text-shadow:0 0 45px #e6b25680}h1,h2{font-family:Cinzel,Georgia,serif;color:#ebc780}h1{font-size:clamp(2rem,6vw,4rem);margin:6px}h2{font-size:clamp(1.3rem,3vw,2.2rem)}p{line-height:1.5;color:#bdb0a0}.card{background:linear-gradient(140deg,#211b22,#100f18);border:1px solid #a3834a;border-radius:16px;padding:clamp(18px,4vw,35px);margin:22px 0;box-shadow:0 18px 70px #0008;position:relative}.card:after{content:"✦";position:absolute;right:14px;top:6px;color:#d2a75c;font-size:20px}input{display:block;width:100%;background:#0d0c14;color:white;padding:16px;border:1px solid #937344;border-radius:9px;font:inherit;margin:8px 0 17px}button{border:0;border-radius:10px;background:linear-gradient(100deg,#efd58d,#b98b43);padding:16px 23px;font:800 1rem Inter;color:#231a0e;cursor:pointer}button:disabled{opacity:.4;cursor:not-allowed}.alt{background:#211c26;border:1px solid #977744;color:#f0ce89}.row{display:flex;gap:12px;flex-wrap:wrap}.row button{flex:1}.hidden{display:none!important}.center{text-align:center}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.choice{background:#261f2a;border:1px solid #a18450;color:#f3e8d6;text-align:left;min-height:80px;line-height:1.5}.choice.selected{background:#765d35}.clock{font:800 3.6rem Cinzel;color:#e5bd6f}.bar{background:#413643;height:10px;border-radius:40px;overflow:hidden;margin:18px 0}.fill{height:100%;background:#e4be73}.rank{padding:14px;display:flex;justify-content:space-between;border-bottom:1px solid #594b34;gap:12px}.rank:nth-child(odd){background:#ffffff07}.rank b{color:#f3cc78}.small{font-size:.85rem;color:#b7a993}#alert{color:#f1ab94}.stat{color:#efc779;font-weight:800}.wide{width:100%}#share{word-break:break-all;color:#deb96e}@media(max-width:600px){.grid{grid-template-columns:1fr}.row button{width:100%}.hero{padding:24px 4px}.clock{font-size:2.9rem}}</style></head><body><main><header><b>✧ O PACTO</b><span id="status" class="kicker">CONHECIMENTO</span></header>
-<section id="start"><div class="hero"><div class="sigil">◈</div><div class="kicker">Filosofia • 9 desafios • Ao vivo</div><h1>O CONTRATO SOCIAL</h1><p>Uma batalha de ideias entre Hobbes, Locke e Rousseau.</p></div><div class="card"><h2>Entre no ritual</h2><label>Nome para o ranking</label><input id="name" maxlength="32" placeholder="Nome e sobrenome" autocomplete="name"><div class="row"><button id="join">ENTRAR COMO ALUNO</button><button class="alt" id="host">ABRIR SALA COMO APRESENTADOR</button></div><p class="small">Não precisa de conta ou banco de dados. O computador do apresentador precisa permanecer conectado. Os alunos recebem um link ou código da sala.</p><p id="alert"></p></div></section>
-<section id="lobby" class="hidden"><div class="hero"><div class="sigil">✧</div><h1>SALA DO CONHECIMENTO</h1><p id="code"></p></div><div class="card center"><h2><span id="count">0</span> PARTICIPANTES</h2><p id="names"></p><div id="presenter" class="hidden"><p>Link para compartilhar:</p><p id="share"></p><button id="copy">COPIAR LINK</button><p>Deixe esta aba aberta no computador do apresentador.</p><button id="begin" class="wide">INICIAR PRIMEIRA QUESTÃO</button></div><p id="waiting">Aguardando o apresentador…</p></div></section>
-<section id="quiz" class="hidden"><div class="card"><div class="kicker" id="difficulty"></div><p id="round"></p><div class="clock center" id="clock">01:00</div><div class="bar"><div class="fill" id="fill"></div></div><h2 id="question"></h2><div class="grid" id="choices"></div><p id="feedback"></p><div id="presenterquiz" class="hidden"><button id="next" class="wide">PRÓXIMA QUESTÃO</button></div></div></section>
-<section id="end" class="hidden"><div class="hero"><div class="sigil">✹</div><h1>RANKING FINAL</h1><p>Classificação completa da turma</p></div><div class="card"><h2>Guardiões do Conhecimento</h2><div id="ranking"></div></div></section>
-<footer class="center small">✧ Quiz escolar de filosofia • estética inspirada em Conhecimento ✧</footer></main>
-<script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script><script>
-const qs=[
-["FÁCIL",60,100,"Qual é a finalidade do contratualismo?",["Explicar a legitimidade do Estado","Explicar o universo","Rejeitar toda lei","Eliminar sociedades"],0],
-["FÁCIL",60,100,"Quem escreveu Leviatã?",["Rousseau","Locke","Thomas Hobbes","Platão"],2],
-["FÁCIL",60,100,"Quais são direitos naturais segundo Locke?",["Força, nobreza e poder","Vida, liberdade e propriedade","Privilégios e censura","Obediência e guerra"],1],
-["MÉDIO",75,200,"Por que Hobbes defende a autoridade de um soberano?",["Para impedir a educação","Para assegurar paz e proteção","Para extinguir a sociedade civil","Para proteger apenas a aristocracia"],1],
-["MÉDIO",75,200,"Segundo Locke, o poder político legítimo depende de:",["Herança de reis","Direito divino","Consentimento dos governados","Ausência de direitos"],2],
-["MÉDIO",75,200,"Para Rousseau, vontade geral significa:",["Desejos individuais somados","A decisão dos mais ricos","Ordem pessoal do governante","Orientação para o bem comum"],3],
-["DIFÍCIL",90,300,"Segundo o artigo 144 da Constituição, segurança pública é:",["Dever do Estado, direito e responsabilidade de todos","Dever apenas de empresas","Responsabilidade só da União","Assunto exclusivo do Exército"],0],
-["DIFÍCIL",90,300,"Qual comparação entre Locke e a Constituição é correta?",["Locke formulou o artigo 5º de 1988","A Constituição nega toda propriedade","Locke defende a proteção da propriedade; a Constituição exige função social","Locke rejeita qualquer direito natural"],2],
-["DIFÍCIL",90,300,"Qual conclusão melhor descreve o contrato social brasileiro?",["Todos os direitos são usufruídos igualmente","A Constituição eliminou desigualdades","Não há deveres do Estado","O pacto existe, mas é preciso ampliar segurança, direitos e participação"],3]
+<!doctype html>
+<html lang="pt-BR"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101014">
+<title>O Pacto — Quiz de Contratualismo</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Inter:wght@400;500;600;700;800&display=swap');
+:root{--bg:#101014;--paper:#1c1a20;--panel:#242027;--gold:#e9c67c;--muted:#aaa3a1;--line:#6e5733;--text:#f5efe3;--mint:#8ac7ac;--red:#f3a3a2}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 85% -15%,#4c34254a,transparent 60%),radial-gradient(ellipse at -15% 85%,#65502a25,transparent 65%),var(--bg);color:var(--text);font:16px Inter,Arial,sans-serif;min-height:100dvh}body:before{content:"✧";position:fixed;right:-110px;top:-180px;color:#e9c67c0a;font-size:700px;pointer-events:none}main{max-width:1120px;margin:0 auto;padding:24px 18px 45px;position:relative}header{border-bottom:1px solid #82704791;display:flex;justify-content:space-between;gap:12px;align-items:center;padding:8px 0 22px}header strong{font-family:Cinzel,Georgia,serif;color:var(--gold);font-size:1.35rem;letter-spacing:.1em}.brand{display:flex;gap:10px;align-items:center}.crest{width:34px;height:34px;border:1px solid var(--gold);display:grid;place-items:center;transform:rotate(45deg);color:var(--gold)}.crest span{transform:rotate(-45deg)}.eyebrow,.pill{font-weight:800;text-transform:uppercase;font-size:.74rem;letter-spacing:.18em;color:var(--gold)}.pill{border:1px solid #a68a54;border-radius:50px;padding:8px 12px;white-space:nowrap}h1,h2,h3{font-family:Cinzel,Georgia,serif;color:var(--gold);line-height:1.17}h1{font-size:clamp(2.2rem,6.5vw,4.6rem);margin:12px 0}h2{font-size:clamp(1.4rem,3vw,2.25rem);margin:4px 0 20px}h3{margin:6px 0 14px;font-size:1.25rem}p{color:#cbc1b4;line-height:1.6}.hero{text-align:center;padding:48px 12px 25px}.hero .symbol{font-size:64px;color:var(--gold);text-shadow:0 0 36px #c49c5790}.hero p{max-width:650px;margin:14px auto}.panel{border:1px solid var(--line);border-radius:18px;background:linear-gradient(140deg,#272127,#16161d 95%);box-shadow:0 20px 65px #0006;padding:clamp(18px,3.5vw,32px);margin:22px 0}.center{text-align:center}.muted{color:var(--muted)}.small{font-size:.9rem}.hide{display:none!important}.group{display:flex;flex-wrap:wrap;gap:12px;align-items:center}.group>*{flex:1}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}button{border:1px solid #d2af6f;background:linear-gradient(120deg,#f3d798,#b78947);color:#20180f;border-radius:12px;min-height:52px;padding:13px 18px;font:800 .98rem Inter,Arial;cursor:pointer;transition:transform .12s,filter .12s}button:not(:disabled):hover{transform:translateY(-2px);filter:brightness(1.08)}button:disabled{opacity:.5;cursor:not-allowed}.secondary{background:#282329;color:var(--gold)}.ghost{border-color:#7e6d55;background:#211f26;color:var(--text)}.wide{width:100%}.big{font-size:1.2rem;padding:19px}.linkbox{padding:15px;border:1px dashed var(--line);border-radius:10px;word-break:break-all;background:#0d0d12;color:var(--gold);font-size:.95rem;line-height:1.5}.meter{height:10px;background:#494149;border-radius:20px;overflow:hidden;margin:15px 0 24px}.fill{height:100%;background:linear-gradient(90deg,#b88a46,#f2d99a);width:100%;transition:width .2s}.timer{font:800 clamp(2.8rem,6vw,4.4rem) Cinzel,serif;color:var(--gold);text-align:center;line-height:1.2}.question{font-size:clamp(1.4rem,3.1vw,2.25rem);margin:10px 0 25px}.option{display:flex;align-items:center;gap:13px;text-align:left;background:#252028;border:1px solid #87704d;color:var(--text);min-height:88px;line-height:1.45;white-space:normal}.option .letter{font-family:Cinzel,serif;color:var(--gold);font-weight:800;font-size:1.25rem;border:1px solid #806845;border-radius:8px;min-width:38px;height:38px;display:grid;place-items:center}.option.picked{border-color:#f6d997;background:#52412e}.option.correct{border-color:#85ccaa;background:#294538}.option.wrong{border-color:#ec9797;background:#4a282d}.status{min-height:26px;color:var(--mint);font-weight:600}.bad{color:var(--red)}.stat{border:1px solid #7a6246;border-radius:12px;padding:18px;background:#141319}.stat b{font-family:Cinzel,serif;font-size:2rem;color:var(--gold);display:block}.stat span{font-size:.8rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted)}.row{display:flex;align-items:center;justify-content:space-between;gap:12px}.row p{margin:6px 0}.sep{border:0;border-top:1px solid #736040;margin:25px 0}.answerrow{padding:9px 0}.answerlabel{display:flex;justify-content:space-between;gap:8px;color:#e7dac7;font-weight:600}.answerbar{margin-top:7px;height:12px;border-radius:50px;background:#464049;overflow:hidden}.answerbar>div{height:100%;background:#be9357;transition:width .15s}.answerrow.reveal .answerbar>div{background:#89caa5}.answerrow.reveal .answerlabel{color:#9bdcb6}.rank{display:flex;justify-content:space-between;gap:10px;padding:15px 11px;border-bottom:1px solid #5a4c3d}.rank:nth-child(odd){background:#ffffff07}.rank strong{color:var(--gold)}.rank.you{border:1px solid var(--gold);border-radius:8px}.screen{animation:fade .25s ease-out}@keyframes fade{from{opacity:.5;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}footer{text-align:center;color:#827970;font-size:.83rem;margin-top:38px}#shareBtn{min-width:195px}#roomCode{font-family:Cinzel,serif;color:var(--gold);font-size:2.5rem;letter-spacing:.16em;margin:6px}#myNumber{font-family:Cinzel,serif;color:var(--gold);font-size:2rem}#message{max-width:760px;margin:12px auto;color:var(--red)}@media(max-width:700px){main{padding:17px 13px 35px}.grid,.three{grid-template-columns:1fr}.hero{padding:28px 0 12px}.group>*{flex-basis:100%}.panel{margin:15px 0}.option{min-height:75px}.pill{font-size:.67rem;letter-spacing:.07em}.row{align-items:flex-start}}
+</style></head>
+<body><main>
+<header><div class="brand"><div class="crest"><span>✦</span></div><strong>O PACTO</strong></div><span class="pill" id="topStatus">Filosofia · 3º DS</span></header>
+<section class="screen" id="home">
+ <div class="hero"><div class="symbol">◈</div><div class="eyebrow">ETEC São Mateus · Contratualismo</div><h1>O CONTRATO SOCIAL</h1><p>Hobbes. Locke. Rousseau. Nove desafios sobre a origem e os limites do poder.</p></div>
+ <div class="panel center"><h2>QUIZ DA TURMA</h2><p>3 questões fáceis · 3 médias · 3 difíceis</p><p>Para participar, abra o link enviado pelos apresentadores. Não precisa informar nome, e-mail ou senha.</p><button id="adminStart" class="big wide">SOU ADMINISTRADOR — ABRIR SALA</button><p class="small muted">O quiz usa uma conexão temporária entre os navegadores. Mantenha o computador da apresentação aberto durante a atividade.</p></div>
+</section>
+<section class="screen hide" id="connecting">
+ <div class="hero"><div class="symbol">⌛</div><div class="eyebrow">Conectando</div><h1>ENTRANDO NA SALA</h1><p id="connectText">Estabelecendo conexão com o apresentador…</p><p id="message" role="alert"></p><button class="secondary hide" id="retry">TENTAR NOVAMENTE</button></div>
+</section>
+<section class="screen hide" id="lobby">
+ <div class="hero"><div class="symbol">✧</div><div class="eyebrow" id="lobbyMode">Sala em preparação</div><h1>PRONTOS PARA O PACTO?</h1><p id="lobbyIntro">Aguardando o início da atividade.</p></div>
+ <div class="panel center" id="adminLobby">
+  <div class="eyebrow">Código da sala</div><div id="roomCode">------</div><p>Envie este link para a turma:</p><div class="linkbox" id="shareLink"></div>
+  <div class="group" style="margin-top:15px"><button id="shareBtn">COPIAR LINK DOS ALUNOS</button><button id="startQuiz" class="secondary">INICIAR AS 9 QUESTÕES</button></div>
+  <hr class="sep"><h3><span id="connectedCount">0</span> PARTICIPANTES CONECTADOS</h3><p id="participantNumbers" class="muted">Aguardando celulares entrarem...</p>
+ </div>
+ <div class="panel center hide" id="studentLobby"><div class="eyebrow">Você é o participante</div><div id="myNumber">—</div><h2>AGUARDE O INÍCIO</h2><p>As perguntas aparecem automaticamente quando o administrador iniciar a rodada.</p></div>
+</section>
+<section class="screen hide" id="quiz">
+ <div class="panel">
+  <div class="row"><div><div class="eyebrow" id="level">QUESTÃO</div><p class="small" id="progress">1 de 9</p></div><div class="pill" id="scoreCaption">O PACTO</div></div>
+  <div class="timer" id="clock">01:00</div><div class="meter"><div class="fill" id="timeFill"></div></div>
+  <h2 class="question" id="question">Pergunta</h2><div class="grid" id="options"></div>
+  <p id="replyStatus" class="status" aria-live="polite"></p>
+ </div>
+ <div class="panel hide" id="adminPanel">
+  <div class="row"><h3>PAINEL DOS ADMINISTRADORES</h3><span class="eyebrow">AO VIVO</span></div>
+  <div class="three"><div class="stat"><b id="statOnline">0</b><span>Conectados</span></div><div class="stat"><b id="statAnswered">0</b><span>Respostas recebidas</span></div><div class="stat"><b id="statMissing">0</b><span>Aguardando</span></div></div>
+  <hr class="sep"><h3>DISTRIBUIÇÃO DAS RESPOSTAS</h3><p class="small muted" id="chartNote">A alternativa correta aparece após o encerramento.</p>
+  <div id="distribution"></div>
+  <div class="group" style="margin-top:22px"><button class="secondary" id="closeQuestion">ENCERRAR E REVELAR</button><button id="nextQuestion" disabled>PRÓXIMA QUESTÃO</button></div>
+  <p class="small muted">Ao chegar a zero, a questão é encerrada automaticamente. Respostas fora do prazo não pontuam.</p>
+ </div>
+</section>
+<section class="screen hide" id="finish">
+ <div class="hero"><div class="symbol">✹</div><div class="eyebrow">O pacto foi decidido</div><h1>RESULTADO FINAL</h1><p>Classificação anônima. Cada aluno vê o seu número de participante.</p></div>
+ <div class="panel"><h2 class="center">RANKING DA TURMA</h2><div id="ranking"></div><div id="endAdmin" class="center hide" style="margin-top:25px"><button id="reset">INICIAR NOVA PARTIDA</button></div></div>
+</section>
+<footer>✧ CONTRATUALISMO · HOBBES · LOCKE · ROUSSEAU ✧</footer>
+</main>
+<script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
+<script>
+"use strict";
+const QUESTIONS=[
+ {d:"FÁCIL",secs:60,pts:100,q:"Qual é uma das principais perguntas do contratualismo?",o:["Como o poder político pode ser legítimo?","Qual é a origem do universo?","Como abolir toda convivência?","Por que não existem leis naturais?"],a:0},
+ {d:"FÁCIL",secs:60,pts:100,q:"Qual pensador escreveu a obra Leviatã?",o:["Jean-Jacques Rousseau","John Locke","Thomas Hobbes","Aristóteles"],a:2},
+ {d:"FÁCIL",secs:60,pts:100,q:"Quais são os direitos naturais mais associados a Locke?",o:["Guerra, censura e tradição","Vida, liberdade e propriedade","Monarquia, herança e nobreza","Impostos, exército e obediência"],a:1},
+ {d:"MÉDIO",secs:75,pts:200,q:"Por que Hobbes defende a criação de um poder soberano forte?",o:["Para suprimir todo conhecimento","Para garantir a paz e evitar a guerra civil","Para fazer o povo viver sem leis","Para impedir a existência de contratos"],a:1},
+ {d:"MÉDIO",secs:75,pts:200,q:"Segundo Locke, de onde vem a legitimidade do governo?",o:["Da herança de qualquer dinastia","Do direito divino de governar","Do consentimento e da proteção de direitos","Da concentração ilimitada do poder"],a:2},
+ {d:"MÉDIO",secs:75,pts:200,q:"Em Rousseau, o que caracteriza a vontade geral?",o:["A soma automática dos desejos individuais","O desejo da maioria rica","A preferência pessoal do governante","A orientação coletiva para o bem comum"],a:3},
+ {d:"DIFÍCIL",secs:90,pts:300,q:"O que afirma o artigo 144 da Constituição brasileira sobre a segurança pública?",o:["É dever do Estado, direito e responsabilidade de todos","É um dever exclusivo das empresas privadas","É atribuição exclusiva do Exército","É responsabilidade apenas dos municípios"],a:0},
+ {d:"DIFÍCIL",secs:90,pts:300,q:"Como relacionar Locke à proteção constitucional da propriedade no Brasil?",o:["Locke escreveu o artigo 5º da Constituição de 1988","A Constituição proíbe toda forma de propriedade","Locke defende a propriedade; a Constituição brasileira também exige sua função social","Locke entendia que propriedade não deveria ser protegida"],a:2},
+ {d:"DIFÍCIL",secs:90,pts:300,q:"Qual conclusão corresponde melhor ao debate sobre o contrato social brasileiro?",o:["Os direitos estão igualmente garantidos para todas as pessoas","A Constituição eliminou a desigualdade social","O Estado não tem obrigações perante os cidadãos","O pacto constitucional existe, mas exige mais segurança, direitos efetivos e participação"],a:3}
 ];
-const $=id=>document.getElementById(id),screens=["start","lobby","quiz","end"];let peer,host=false,hostConn=null,connections=new Map(),players=new Map(),self="",hostCode="",state={phase:"lobby",index:-1,at:0},tick=null,answered=new Set();
-const show=s=>screens.forEach(x=>$(x).classList.toggle("hidden",s!==x));const tell=s=>{$("alert").textContent=s};const send=(c,o)=>{try{if(c?.open)c.send(o)}catch(e){}};const broadcast=o=>connections.forEach(c=>send(c,o));const clonePlayers=()=>[...players.values()].map(({id,name,score,correct,order})=>({id,name,score,correct,order}));const snapshot=()=>({type:"sync",state,players:clonePlayers()});function updateAll(){render();broadcast(snapshot())}
-const codeFromUrl=new URLSearchParams(location.search).get("s");if(codeFromUrl)$("name").placeholder="Escreva seu nome para entrar na sala";
-function makePeer(id){return new Promise((resolve,reject)=>{const p=new Peer(id,{debug:0});const timeout=setTimeout(()=>reject(Error("Conexão não estabelecida.")),12000);p.on("open",()=>{clearTimeout(timeout);resolve(p)});p.on("error",e=>{clearTimeout(timeout);reject(e)})})}
-$("host").onclick=async()=>{const name=$("name").value.trim()||"Apresentador";$("host").disabled=true;host=true;hostCode=Math.random().toString(36).slice(2,8).toUpperCase();try{peer=await makePeer("pacto-"+hostCode.toLowerCase());self="host";$("status").textContent="● SALA "+hostCode;const link=location.origin+location.pathname+"?s="+hostCode;$("share").textContent=link;$("presenter").classList.remove("hidden");$("waiting").classList.add("hidden");peer.on("connection",c=>{c.on("open",()=>{connections.set(c.peer,c);send(c,snapshot())});c.on("data",m=>receiveHost(c,m));c.on("close",()=>{connections.delete(c.peer)});c.on("error",()=>{connections.delete(c.peer)})});show("lobby");render()}catch(e){tell("Erro ao abrir a sala: "+e.message+" Tente novamente.");$("host").disabled=false}};
-$("join").onclick=async()=>{let n=$("name").value.trim();let code=codeFromUrl||prompt("Qual é o código da sala informado pelo apresentador?");if(n.length<2||!code)return tell("Preencha seu nome e o código da sala.");$("join").disabled=true;hostCode=code.trim().toUpperCase();self="player-"+Math.random().toString(36).slice(2,11);try{peer=await makePeer();hostConn=peer.connect("pacto-"+hostCode.toLowerCase(),{reliable:true});hostConn.on("open",()=>{send(hostConn,{type:"join",id:self,name:n.slice(0,32)});$("status").textContent="● CONECTADO";show("lobby")});hostConn.on("data",receiveClient);hostConn.on("close",()=>{$("status").textContent="⚠ DESCONECTADO";$("feedback").textContent="Conexão perdida. Reabra o link se necessário."});hostConn.on("error",()=>{$("status").textContent="⚠ ERRO DE CONEXÃO"});setTimeout(()=>{if(!hostConn.open){tell("Não foi possível localizar o apresentador. Confira o código.");$("join").disabled=false}},9000)}catch(e){tell("Falha na conexão: "+e.message);$("join").disabled=false}};
-function receiveHost(c,m){if(m.type==="join"){if(!players.has(c.peer)&&players.size>=60){send(c,{type:"error",message:"Sala cheia"});return}if(!players.has(c.peer))players.set(c.peer,{id:c.peer,name:String(m.name||"Aluno").slice(0,32),score:0,correct:0,order:players.size,answered:-1});send(c,snapshot());updateAll()}if(m.type==="answer"&&state.phase==="quiz"){const p=players.get(c.peer),q=qs[state.index];if(!p||p.answered===state.index||m.index!==state.index||Date.now()>state.at+q[1]*1000)return;p.answered=state.index;if(Number(m.choice)===q[5]){p.score+=q[2];p.correct++}send(c,{type:"ack",index:state.index});updateAll()}}
-function receiveClient(m){if(m.type==="sync"){state=m.state;players=new Map(m.players.map(p=>[p.id,p]));render()}if(m.type==="ack"){answered.add(m.index);render()}if(m.type==="error")$("feedback").textContent=m.message}
-function render(){if(state.phase==="lobby"){show("lobby");$("code").textContent="CÓDIGO "+hostCode;$("count").textContent=players.size;$("names").textContent=[...players.values()].map(p=>p.name).join(" • ");return}if(state.phase==="end"){clearInterval(tick);show("end");const root=$("ranking");root.replaceChildren();[...players.values()].sort((a,b)=>b.score-a.score||b.correct-a.correct||a.order-b.order).forEach((p,i)=>{let row=document.createElement("div");row.className="rank";const a=document.createElement("b"),b=document.createElement("span");a.textContent=(i===0?"🏆 ":(i+1)+"º ") +p.name;b.textContent=p.score+" pts • "+p.correct+"/9";row.append(a,b);root.append(row)});return}show("quiz");const i=state.index,q=qs[i];$("difficulty").textContent=q[0]+" • "+q[2]+" PONTOS";$("round").textContent="QUESTÃO "+(i+1)+" DE 9";$("question").textContent=q[3];$("presenterquiz").classList.toggle("hidden",!host);$("next").textContent=i===8?"MOSTRAR RANKING FINAL":"PRÓXIMA QUESTÃO →";$("choices").replaceChildren();q[4].forEach((option,j)=>{let b=document.createElement("button");b.className="choice";b.textContent="ABCD"[j]+" • "+option;b.disabled=host||answered.has(i);if(answered.has(i))b.classList.toggle("selected",false);b.onclick=()=>{if(answered.has(i))return;send(hostConn,{type:"answer",index:i,choice:j});answered.add(i);b.classList.add("selected");$("feedback").textContent="Resposta enviada!";$("choices").querySelectorAll("button").forEach(x=>x.disabled=true)};$("choices").append(b)});$("feedback").textContent=host?"Apresentador: aguarde o cronômetro ou avance quando desejar.":answered.has(i)?"Resposta registrada. Aguarde!":"Escolha uma alternativa.";clearInterval(tick);const refresh=()=>{const left=Math.max(0,q[1]-Math.floor((Date.now()-state.at)/1000));$("clock").textContent=String(Math.floor(left/60)).padStart(2,"0")+":"+String(left%60).padStart(2,"0");$("fill").style.width=(left/q[1]*100)+"%";if(left===0)$("choices").querySelectorAll("button").forEach(b=>b.disabled=true)};refresh();tick=setInterval(refresh,350)}
-function advance(){let i=state.index+1;state={phase:i>=9?"end":"quiz",index:i,at:Date.now()};updateAll()}$("begin").onclick=advance;$("next").onclick=advance;$("copy").onclick=()=>navigator.clipboard.writeText($("share").textContent).then(()=>{$("copy").textContent="LINK COPIADO ✓"}).catch(()=>{});
+const el=id=>document.getElementById(id);
+const views=["home","connecting","lobby","quiz","finish"];
+const show=id=>views.forEach(v=>el(v).classList.toggle("hide",v!==id));
+const safe=(s)=>String(s||"").replace(/[^A-Z0-9]/gi,"").slice(0,8).toUpperCase();
+const isAdmin=new URLSearchParams(location.search).get("admin")==="1";
+const codeParam=safe(new URLSearchParams(location.search).get("s"));
+let admin=isAdmin,peer=null,serverConn=null,room="",clientId="",myNumber=0,connMap=new Map(),idByPeer=new Map(),participants=new Map(),sequence=0;
+let state={phase:"lobby",index:-1,at:0},answers=QUESTIONS.map(()=>[0,0,0,0]),clientPlayers=[],answeredIndices=new Set(),myLastChoice=-1;
+let offsetMs=0,deadlineTimer=null,clockTimer=null,currentRendered="",pending=false;
+const connected=()=>[...participants.values()].filter(p=>p.online).length;
+function send(c,msg){try{if(c&&c.open)c.send(msg)}catch(_){}}
+function snapshot(){return {type:"sync",state,atServer:Date.now(),players:[...participants.values()].map(p=>({number:p.number,points:p.points,hits:p.hits,online:p.online})),total:participants.size,connected:connected(),tally:state.index>=0?answers[state.index]:[0,0,0,0],received:state.index>=0?[...participants.values()].filter(p=>p.lastQ===state.index).length:0}}
+function broadcast(){const data=snapshot();for(const c of connMap.values())send(c,data);render(data)}
+function generateCode(){const a=new Uint8Array(5);crypto.getRandomValues(a);return Array.from(a,x=>(x%36).toString(36)).join("").toUpperCase().slice(0,7)}
+function generateId(){const a=new Uint8Array(16);crypto.getRandomValues(a);return Array.from(a,x=>x.toString(16).padStart(2,"0")).join("")}
+function createPeer(id){return new Promise((resolve,reject)=>{if(typeof Peer==="undefined")return reject(new Error("A biblioteca de conexão não carregou. Verifique sua internet."));let p=new Peer(id||undefined,{debug:0});let done=false;let t=setTimeout(()=>{if(!done){done=true;try{p.destroy()}catch(_){}reject(new Error("Tempo esgotado ao conectar à rede PeerJS."))}},16000);p.on("open",()=>{if(done)return;done=true;clearTimeout(t);resolve(p)});p.on("error",e=>{if(!done){done=true;clearTimeout(t);reject(e)}})})}
+function failure(msg){show("connecting");el("message").textContent=msg;el("retry").classList.remove("hide");el("topStatus").textContent="CONEXÃO INDISPONÍVEL"}
+el("retry").onclick=()=>location.reload();
+el("adminStart").onclick=()=>location.assign("./admin.html");
+el("shareBtn").onclick=async()=>{let url=el("shareLink").textContent;try{await navigator.clipboard.writeText(url);el("shareBtn").textContent="LINK COPIADO ✓"}catch(e){el("shareBtn").textContent="SELECIONE E COPIE O LINK ACIMA"}};
+function startTimer(){clearTimeout(deadlineTimer);if(state.phase!=="question")return;const q=QUESTIONS[state.index];let left=state.at+q.secs*1000-Date.now();deadlineTimer=setTimeout(()=>{if(admin&&state.phase==="question")closeRound()},Math.max(0,left+25))}
+function closeRound(){if(!admin||state.phase!=="question")return;clearTimeout(deadlineTimer);state={...state,phase:"review"};broadcast()}
+function begin(){if(!admin||state.phase!=="lobby")return;next()}
+function next(){if(!admin||!(state.phase==="lobby"||state.phase==="review"))return;let idx=state.index+1;state={phase:idx>=QUESTIONS.length?"finish":"question",index:idx,at:Date.now()};startTimer();broadcast()}
+function reset(){if(!admin)return;participants.clear();for(const c of connMap.values())try{c.close()}catch(_){}connMap.clear();idByPeer.clear();sequence=0;answers=QUESTIONS.map(()=>[0,0,0,0]);state={phase:"lobby",index:-1,at:0};broadcast()}
+el("startQuiz").onclick=begin;el("closeQuestion").onclick=closeRound;el("nextQuestion").onclick=next;el("reset").onclick=reset;
+async function openAdmin(){
+ show("connecting");el("connectText").textContent="Criando a sala dos administradores…";
+ room=generateCode();
+ try{
+  peer=await createPeer("pacto-contrato-"+room.toLowerCase());
+  el("topStatus").textContent="● ADMINISTRADOR";
+  const studentUrl=new URL("./index.html?s="+room,location.href).href;
+  el("shareLink").textContent=studentUrl;el("roomCode").textContent=room;
+  peer.on("connection",c=>{
+   c.on("open",()=>{connMap.set(c.peer,c);send(c,snapshot())});
+   c.on("data",m=>receiveFromStudent(c,m));
+   c.on("close",()=>dropConnection(c.peer));
+   c.on("error",()=>dropConnection(c.peer));
+  });
+  peer.on("disconnected",()=>el("topStatus").textContent="⚠ REDE INTERROMPIDA");
+  peer.on("error",()=>el("topStatus").textContent="⚠ ERRO NA REDE");
+  broadcast();show("lobby");
+ }catch(e){failure("Não foi possível criar a sala: "+e.message+". Abra novamente ou troque de rede.")}
+}
+function dropConnection(peerId){
+ const c=connMap.get(peerId);if(c&&c.open)return;
+ connMap.delete(peerId);
+ const token=idByPeer.get(peerId);idByPeer.delete(peerId);
+ if(token){const p=participants.get(token);if(p&&p.peerId===peerId){p.online=false;broadcast()}}
+}
+function receiveFromStudent(c,m){
+ if(!m||typeof m!=="object")return;
+ if(m.type==="join"){
+  const token=String(m.token||"");
+  if(!/^[a-f0-9]{32}$/.test(token)){send(c,{type:"error",message:"Sessão inválida."});return}
+  let p=participants.get(token);
+  if(!p){
+   if(participants.size>=60){send(c,{type:"error",message:"Sala cheia (máximo de 60 acessos)."});return}
+   sequence++;p={token,number:sequence,points:0,hits:0,lastQ:-1,lastChoice:-1,peerId:c.peer,online:true};participants.set(token,p)
+  }else{
+   const old=connMap.get(p.peerId);if(old&&old!==c)try{old.close()}catch(_){}
+   p.peerId=c.peer;p.online=true
+  }
+  idByPeer.set(c.peer,token);
+  send(c,{type:"welcome",number:p.number,lastQ:p.lastQ,lastChoice:p.lastChoice});
+  broadcast();return;
+ }
+ if(m.type==="answer"&&state.phase==="question"){
+  const token=idByPeer.get(c.peer),p=participants.get(token),q=QUESTIONS[state.index];
+  const n=Number(m.choice);
+  if(!p||!p.online||p.peerId!==c.peer||p.lastQ===state.index||m.index!==state.index||!Number.isInteger(n)||n<0||n>3||Date.now()>=state.at+q.secs*1000)return;
+  p.lastQ=state.index;p.lastChoice=n;answers[state.index][n]++;
+  if(n===q.a){p.points+=q.pts;p.hits++}
+  send(c,{type:"accepted",index:state.index,choice:n});
+  broadcast()
+ }
+}
+async function joinStudent(){
+ show("connecting");room=codeParam;
+ if(!/^[A-Z0-9]{5,8}$/.test(room)){failure("O link está incompleto. Solicite o link da sala ao apresentador.");return}
+ const key="pacto-contrato-"+room;
+ try{clientId=sessionStorage.getItem(key)||generateId();sessionStorage.setItem(key,clientId)}catch(_){clientId=generateId()}
+ try{
+  peer=await createPeer();
+  serverConn=peer.connect("pacto-contrato-"+room.toLowerCase(),{reliable:true});
+  let opened=false;
+  const wait=setTimeout(()=>{if(!opened)failure("Sala não encontrada. Confira se o apresentador já abriu a sala e se está conectado.")},13000);
+  serverConn.on("open",()=>{opened=true;clearTimeout(wait);send(serverConn,{type:"join",token:clientId});el("topStatus").textContent="● CONECTADO"});
+  serverConn.on("data",receiveFromAdmin);
+  serverConn.on("close",()=>failure("A sala foi desconectada. Peça ao administrador para manter a aba aberta."));
+  serverConn.on("error",()=>failure("Falha na conexão. Verifique sua rede e recarregue."));
+  peer.on("error",()=>{if(!opened)failure("Não foi possível encontrar a sala. Confira o link.")});
+ }catch(e){failure("Erro ao entrar: "+e.message)}
+}
+function receiveFromAdmin(m){
+ if(!m||typeof m!=="object")return;
+ if(m.type==="error"){failure(m.message);return}
+ if(m.type==="welcome"){myNumber=m.number;myLastChoice=m.lastChoice;if(m.lastQ>=0)answeredIndices.add(m.lastQ);el("myNumber").textContent=String(myNumber).padStart(2,"0");return}
+ if(m.type==="accepted"){answeredIndices.add(m.index);myLastChoice=m.choice;return}
+ if(m.type==="sync"){
+  offsetMs=Date.now()-m.atServer;state=m.state;clientPlayers=m.players;
+  render(m)
+ }
+}
+function timeRemaining(){if(state.phase!=="question")return 0;return Math.max(0,Math.ceil((state.at+QUESTIONS[state.index].secs*1000-(Date.now()-(admin?0:offsetMs)))/1000))}
+function updateClock(){if(state.phase!=="question"&&state.phase!=="review")return;const q=QUESTIONS[state.index];const remaining=state.phase==="review"?0:timeRemaining();el("clock").textContent=String(Math.floor(remaining/60)).padStart(2,"0")+":"+String(remaining%60).padStart(2,"0");el("timeFill").style.width=(remaining/q.secs*100)+"%";if(!admin&&state.phase==="question"&&remaining===0){el("replyStatus").textContent=answeredIndices.has(state.index)?"Resposta enviada. Aguarde o resultado.":"Tempo encerrado. Aguarde o resultado.";document.querySelectorAll("#options button").forEach(b=>b.disabled=true)}}
+function render(payload=snapshot()){
+ if(state.phase==="lobby"){
+  show("lobby");el("adminLobby").classList.toggle("hide",!admin);el("studentLobby").classList.toggle("hide",admin);
+  el("lobbyMode").textContent=admin?"Sala de controle":"Participação anônima";
+  el("lobbyIntro").textContent=admin?"A sala está pronta. Envie o link e inicie quando todos entrarem.":"Você entrou na sala "+room+". Não feche esta aba.";
+  if(admin){
+   el("connectedCount").textContent=connected();
+   const nums=[...participants.values()].filter(p=>p.online).map(p=>"#"+String(p.number).padStart(2,"0"));
+   el("participantNumbers").textContent=nums.length?nums.join(" · "):"Aguardando celulares entrarem...";
+  }return
+ }
+ if(state.phase==="finish"){
+  show("finish");el("endAdmin").classList.toggle("hide",!admin);
+  const roster=(admin?[...participants.values()].map(p=>({number:p.number,points:p.points,hits:p.hits})):(payload.players||clientPlayers)).sort((a,b)=>b.points-a.points||b.hits-a.hits||a.number-b.number);
+  const root=el("ranking");root.replaceChildren();
+  roster.forEach((p,i)=>{const r=document.createElement("div");r.className="rank"+(!admin&&p.number===myNumber?" you":"");const a=document.createElement("strong"),b=document.createElement("span");a.textContent=(i===0?"🏆 ":(i+1)+"º · ")+"Participante "+String(p.number).padStart(2,"0");b.textContent=p.points+" pontos · "+p.hits+"/9";r.append(a,b);root.append(r)});
+  if(!roster.length){root.textContent="Nenhum participante respondeu nesta rodada."}return
+ }
+ if(state.phase!=="question"&&state.phase!=="review")return;
+ show("quiz");const q=QUESTIONS[state.index],key=state.index+":"+state.phase;
+ el("adminPanel").classList.toggle("hide",!admin);
+ el("level").textContent=q.d+" · "+q.pts+" PONTOS";
+ el("progress").textContent="QUESTÃO "+(state.index+1)+" DE "+QUESTIONS.length;
+ el("scoreCaption").textContent=admin?"ADMINISTRADOR":"PARTICIPANTE "+String(myNumber).padStart(2,"0");
+ el("question").textContent=q.q;
+ if(currentRendered!==key){
+  currentRendered=key;const root=el("options");root.replaceChildren();
+  q.o.forEach((option,index)=>{
+   const b=document.createElement("button");b.type="button";b.className="option";
+   const letter=document.createElement("span"),value=document.createElement("span");letter.className="letter";letter.textContent="ABCD"[index];value.textContent=option;b.append(letter,value);
+   if(state.phase==="review"&&index===q.a)b.classList.add("correct");
+   if(!admin&&answeredIndices.has(state.index)&&index===myLastChoice)b.classList.add("picked");
+   if(state.phase==="review"&&answeredIndices.has(state.index)&&index===myLastChoice&&index!==q.a)b.classList.add("wrong");
+   b.disabled=admin||state.phase==="review"||answeredIndices.has(state.index)||timeRemaining()===0;
+   b.onclick=()=>answerQuestion(index);
+   root.append(b)
+  })
+ }
+ if(state.phase==="review"){
+  el("replyStatus").textContent="✓ Resposta correta: "+String.fromCharCode(65+q.a)+" — "+q.o[q.a];
+ }else if(admin){el("replyStatus").textContent="Rodada em andamento: acompanhe a votação abaixo."}
+ else{el("replyStatus").textContent=answeredIndices.has(state.index)?"✓ Resposta enviada. Aguarde a correção.":"Escolha uma alternativa antes do cronômetro zerar."}
+ if(admin){
+  const total=payload.connected??connected(),received=payload.received??[...participants.values()].filter(p=>p.lastQ===state.index).length;
+  el("statOnline").textContent=total;el("statAnswered").textContent=received;el("statMissing").textContent=Math.max(0,total-received);
+  const counts=payload.tally||answers[state.index],sum=counts.reduce((a,b)=>a+b,0);
+  const root=el("distribution");root.replaceChildren();
+  counts.forEach((n,i)=>{const r=document.createElement("div");r.className="answerrow"+(state.phase==="review"&&i===q.a?" reveal":"");
+   const txt=document.createElement("div");txt.className="answerlabel";const name=document.createElement("span"),amt=document.createElement("span");name.textContent="ABCD"[i]+" · "+q.o[i];amt.textContent=n+" ("+(sum?Math.round(n/sum*100):0)+"%)";txt.append(name,amt);
+   const bar=document.createElement("div");bar.className="answerbar";const width=document.createElement("div");width.style.width=(sum?n/sum*100:0)+"%";bar.append(width);r.append(txt,bar);root.append(r)});
+  el("closeQuestion").disabled=state.phase!=="question";el("nextQuestion").disabled=state.phase!=="review";
+  el("nextQuestion").textContent=state.index===8?"VER RANKING FINAL":"PRÓXIMA QUESTÃO →";
+  el("chartNote").textContent=state.phase==="review"?"Resposta correta: "+String.fromCharCode(65+q.a)+". Confira a distribuição antes de avançar.":"As alternativas corretas são reveladas ao encerrar a questão.";
+ }
+ updateClock()
+}
+function answerQuestion(n){
+ if(admin||state.phase!=="question"||answeredIndices.has(state.index)||timeRemaining()===0||pending)return;
+ pending=true;answeredIndices.add(state.index);myLastChoice=n;
+ send(serverConn,{type:"answer",index:state.index,choice:n});
+ el("replyStatus").textContent="✓ Resposta enviada. Aguarde a correção.";
+ document.querySelectorAll("#options button").forEach((b,i)=>{b.disabled=true;if(i===n)b.classList.add("picked")});
+ pending=false
+}
+clockTimer=setInterval(updateClock,250);
+if(isAdmin){openAdmin()}else if(codeParam){joinStudent()}else{show("home")}
+window.addEventListener("beforeunload",e=>{if(admin&&peer&&!peer.destroyed){e.preventDefault();e.returnValue=""}});
 </script></body></html>
