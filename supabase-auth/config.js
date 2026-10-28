@@ -1,4 +1,3 @@
-// Configure com os dados do SEU projeto: Supabase > Project Settings > API Keys.
-// É seguro publicar SOMENTE a chave publishable (sb_publishable_...) ou anon, nunca service_role/secret.
-export const SUPABASE_URL = "COLE_AQUI_SUA_URL";
-export const SUPABASE_ANON_KEY = "COLE_AQUI_SUA_CHAVE_PUBLICA";
+// Configuração pública do Supabase. Nunca publique chaves secret ou service_role.
+export const SUPABASE_URL = "https://gxkvnkyprpyqnbqbakck.supabase.co";
+export const SUPABASE_ANON_KEY = "sb_publishable_uqMsmPvRwTWl_xUINkwb4g_5pJZFXAr";
