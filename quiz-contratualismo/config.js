@@ -1,1 +1,0 @@
-window.FIREBASE_CONFIG={apiKey:"SUBSTITUIR_API_KEY",authDomain:"PROJETO.firebaseapp.com",databaseURL:"https://PROJETO-default-rtdb.firebaseio.com",projectId:"PROJETO",appId:"SUBSTITUIR_APP_ID"};
